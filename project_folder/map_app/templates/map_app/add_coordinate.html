@@ -13,6 +13,7 @@
             --background: #f8fafc;
             --text: #1e293b;
             --gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            --map-pattern: #e2e8f0;
         }
 
         * {
@@ -33,7 +34,11 @@
             justify-content: center;
             perspective: 1000px;
             overflow-x: hidden;
-            background: radial-gradient(circle at top right, #dbeafe, var(--background));
+            background: 
+                linear-gradient(45deg, transparent 48%, var(--map-pattern) 49%, var(--map-pattern) 51%, transparent 52%) 0 0/50px 50px,
+                linear-gradient(-45deg, transparent 48%, var(--map-pattern) 49%, var(--map-pattern) 51%, transparent 52%) 0 0/50px 50px,
+                radial-gradient(circle at top right, #dbeafe, var(--background));
+            padding: 2rem;
         }
 
         .form-container {
@@ -49,6 +54,20 @@
             animation: float 6s ease-in-out infinite;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .compass-decoration {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 3rem;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @keyframes float {
@@ -66,55 +85,40 @@
             margin-bottom: 2rem;
             text-align: center;
             position: relative;
-            /* Hapus text-shadow karena bisa konflik dengan efek gradient */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        h1::after {
-            content: "📝";
-            position: absolute;
-            right: -40px;
-            top: 0;
-            animation: wave 2s infinite;
-        }
-
-        @keyframes wave {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(15deg); }
-        }
+        h1::before { content: "📍"; }
+        h1::after { content: "🌍"; }
 
         .form-group {
             margin-bottom: 1.8rem;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 12px;
         }
 
         .form-group:hover {
             transform: translateZ(20px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         label {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             margin-bottom: 0.8rem;
             font-weight: 600;
             color: var(--text);
-            transition: all 0.3s ease;
-            position: relative;
         }
 
-        label::after {
-            position: absolute;
-            margin-left: 8px;
-        }
-
-        #nama-label::after { content: "👤"; }
-        #kategori-label::after { content: "🏷️"; }
-        #latitude-label::after { content: "🌍"; }
-        #longitude-label::after { content: "🌎"; }
-        #deskripsi-label::after { content: "📝"; }
-        #gambar-label::after { content: "🖼️"; }
-
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 14px;
             border: 2px solid #e2e8f0;
@@ -124,18 +128,23 @@
             background: white;
         }
 
-        input:focus, textarea:focus {
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231e293b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        input:focus, textarea:focus, select:focus {
             border-color: var(--accent);
             outline: none;
             box-shadow: 
                 0 0 0 3px rgba(59, 130, 246, 0.2),
                 0 10px 20px rgba(0,0,0,0.1);
             transform: translateY(-2px);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
         }
 
         .btn-container {
@@ -154,25 +163,11 @@
             transition: all 0.3s ease;
             text-align: center;
             text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            transform-style: preserve-3d;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.1);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-
-        .btn:hover::before {
-            transform: translateX(0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
         }
 
         .btn-primary {
@@ -182,7 +177,7 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px) translateZ(10px);
+            transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
 
@@ -193,11 +188,10 @@
         }
 
         .btn-secondary:hover {
-            transform: translateY(-3px) translateZ(10px);
+            transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
-        /* Custom file input styling */
         input[type="file"] {
             padding: 10px;
             background: #f1f5f9;
@@ -215,12 +209,18 @@
             transition: all 0.3s ease;
         }
 
-        input[type="file"]::file-selector-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        .geo-particle {
+            position: fixed;
+            pointer-events: none;
+            animation: geoFloat 1.5s ease-out forwards;
+            font-size: 1.5rem;
         }
 
-        /* Error animation */
+        @keyframes geoFloat {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
@@ -235,53 +235,78 @@
 </head>
 <body>
     <div class="form-container">
-        <h1>{{ page_title }}</h1>
+        <div class="compass-decoration">🧭</div>
+        <h1>Tambah Data</h1>
         <form method="POST" enctype="multipart/form-data" id="coordinateForm">
             {% csrf_token %}
             <div class="form-group">
-                <label for="nama" id="nama-label">Nama</label>
-                <input type="text" id="nama" name="nama" value="{{ coordinate.nama }}" required>
+                <label>Nama Lokasi 📍</label>
+                <input type="text" name="nama" value="{{ coordinate.nama }}" required>
             </div>
 
             <div class="form-group">
-                <label for="kategori" id="kategori-label">Kategori</label>
-                <input type="text" id="kategori" name="kategori" value="{{ coordinate.kategori }}" required>
+                <label>Kategori 🏷</label>
+                <select name="kategori" required>
+                    <option value="Halte" {% if row.Kategori == "Halte" %}selected{% endif %}>🚏 Halte</option>
+                    <option value="Bandara" {% if row.Kategori == "Bandara" %}selected{% endif %}>✈ Bandara</option>
+                    <option value="Sekolah" {% if row.Kategori == "Sekolah" %}selected{% endif %}>🏫 Sekolah</option>
+                    <option value="Taman" {% if row.Kategori == "Taman" %}selected{% endif %}>🌳 Taman</option>
+                    <option value="Rumah Sakit" {% if row.Kategori == "Rumah Sakit" %}selected{% endif %}>🏥 Rumah Sakit</option>
+                    <option value="Pasar" {% if row.Kategori == "Pasar" %}selected{% endif %}>🏪 Pasar</option>
+                    <option value="Tempat Ibadah" {% if row.Kategori == "Tempat Ibadah" %}selected{% endif %}>🕌 Tempat Ibadah</option>
+                    <option value="Universitas" {% if row.Kategori == "Universitas" %}selected{% endif %}>🎓 Universitas</option>
+                    <option value="Pusat Perbelanjaan" {% if row.Kategori == "Pusat Perbelanjaan" %}selected{% endif %}>🛍 Pusat Perbelanjaan</option>
+                    <option value="GOR Olahraga" {% if row.Kategori == "GOR Olahraga" %}selected{% endif %}>⚽ GOR Olahraga</option>
+                </select>
             </div>
 
             <div class="form-group">
-                <label for="latitude" id="latitude-label">Latitude</label>
-                <input type="text" id="latitude" name="latitude" value="{{ coordinate.latitude }}" required>
+                <label>Latitude 🌍</label>
+                <input type="text" name="latitude" value="{{ coordinate.latitude }}" required>
             </div>
 
             <div class="form-group">
-                <label for="longitude" id="longitude-label">Longitude</label>
-                <input type="text" id="longitude" name="longitude" value="{{ coordinate.longitude }}" required>
+                <label>Longitude 🌎</label>
+                <input type="text" name="longitude" value="{{ coordinate.longitude }}" required>
             </div>
 
             <div class="form-group">
-                <label for="deskripsi" id="deskripsi-label">Deskripsi</label>
-                <textarea id="deskripsi" name="deskripsi" required>{{ coordinate.deskripsi }}</textarea>
+                <label>Deskripsi 📝</label>
+                <textarea name="deskripsi" required>{{ coordinate.deskripsi }}</textarea>
             </div>
 
             <div class="form-group">
-                <label for="gambar" id="gambar-label">Gambar</label>
-                <input type="file" id="gambar" name="gambar">
+                <label>Gambar Lokasi 🖼</label>
+                <input type="file" name="gambar">
             </div>
 
             <div class="btn-container">
-                <button type="submit" class="btn btn-primary">Simpan ✨</button>
-                <a href="/" class="btn btn-secondary">Batal 🔙</a>
+                <button type="submit" class="btn btn-primary">Simpan Data 💾</button>
+                <a href="/" class="btn btn-secondary">Kembali 🔙</a>
             </div>
         </form>
     </div>
 
     <script>
-        // Form animation and validation
         const form = document.getElementById('coordinateForm');
-        const inputs = form.querySelectorAll('input, textarea');
+        const inputs = document.querySelectorAll('input, textarea, select');
+        const geoEmojis = ['📍', '🌍', '🗺', '🧭', '🌐', '🏔', '🌋', '🗻'];
+
+        function createGeoParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'geo-particle';
+            particle.textContent = geoEmojis[Math.floor(Math.random() * geoEmojis.length)];
+            particle.style.left = ${x}px;
+            particle.style.top = ${y}px;
+            document.body.appendChild(particle);
+            
+            particle.addEventListener('animationend', () => particle.remove());
+        }
 
         inputs.forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function(e) {
+                const rect = this.getBoundingClientRect();
+                createGeoParticle(rect.left, rect.top);
                 this.parentElement.style.transform = 'translateZ(30px)';
             });
 
@@ -302,6 +327,16 @@
 
             if (!isValid) {
                 e.preventDefault();
+            } else {
+                // Create celebration effect
+                for(let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        createGeoParticle(
+                            window.innerWidth/2 + (Math.random() - 0.5) * 200,
+                            window.innerHeight/2 + (Math.random() - 0.5) * 200
+                        );
+                    }, i * 100);
+                }
             }
         });
     </script>
